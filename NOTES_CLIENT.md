@@ -22,6 +22,8 @@
 
 ### Business Logistics / Concerns
 
+- Best way to contact David with questions? Phone, email, text?
+
 - We must establish **what is** considered **complete**. How shall we define that the project is done? What is included, and what is **not** included.
 
 - Because payment is being accepted, do we need someone to write a user agreement, or privacy statements?
@@ -42,3 +44,22 @@
 ## Proposal
 
 If both a website and mobile app are required, I might wish to do both. However, this would definitely benefit from a designer of some sort. Someone to come up with at least the basic look of the site.
+
+An 'AGILE' methodology makes sense.
+
+- Outline the main objectives of the app
+
+  - timer
+  - video course purchases and viewing
+  - social platform?
+
+- Setup a timeline for the project as a whole to be done
+- Have 2-week spurts to implement features.
+- Meet up at the end of each 2-week period. See progress, and determine the next set of features to develop in order of priority. This order of priority may change with time.
+  - for example, first 2-weeks: Chuck gets the meditation part of the app working - timer, UI, etc. Meanwhile, a designer is sourced, or examples are found for the website layout, and website sections figured out (Homepage, courses, about David, contact, etc)
+  - next 2-weeks. Chuck works towards authentication of users and database structure. Getting authenticated access to parts of the app like videos, etc.
+  - next, move to developing the website.
+  - get website authentication into place - courses, etc.
+  - revisit the social aspect.
+
+Determine a point to call version 1.0.0 complete, and have a live deployment. (😃 🍼 Baby is coming around March 19!)
