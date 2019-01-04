@@ -1,49 +1,27 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from 'react'
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import TimerScreen from './screens/TimerScreen'
+import AboutScreen from './screens/AboutScreen'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+// Define the navigation stacks
+const rootNavigator = createBottomTabNavigator({
+  Timer: {
+    screen: TimerScreen
+  },
+  About: {
+    screen: AboutScreen
+  }
+})
 
-type Props = {};
-export default class App extends Component<Props> {
+// Wrap the root navigation stack into <AppContainer />
+const AppContainer = createAppContainer(rootNavigator)
+
+// Render the <AppContainer />
+class App extends React.Component {
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+    return <AppContainer />
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+export default App
