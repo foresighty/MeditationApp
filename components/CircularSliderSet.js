@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Dimensions } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import CircularSlider from './CircularSlider'
 
 import cssGlobalStyles from '../utils/cssGlobalStyles'
@@ -11,15 +11,26 @@ class CircularSliderSet extends Component {
 
   render() {
     // Dynamically get the width information to feed into the sliders below.
-    windowWidth = Dimensions.get('window').width
+    ;(windowWidth = Dimensions.get('window').width),
+      (windowHeight = Dimensions.get('window').height - 50) // -50 for the toolbar
     meditationSliderRadius = windowWidth / 2.5
     intervalSliderRadius = meditationSliderRadius - 50
     prepTimeSliderRadius = intervalSliderRadius - 50
+    console.log(windowWidth)
+    console.log(meditationSliderRadius)
 
     return (
-      <View style={styles.container}>
+      <View>
         <View style={{ flex: 1, backgroundColor: '' }} />
-        <View style={{ position: 'relative' }}>
+        <View
+          style={{
+            position: 'absolute',
+            left:
+              -(windowWidth / 2) +
+              (windowWidth - meditationSliderRadius * 2) / 4,
+            top: windowHeight / 4
+          }}
+        >
           {/* Meditation controls */}
           <CircularSlider
             value={this.props.meditationValue}
@@ -29,7 +40,7 @@ class CircularSliderSet extends Component {
             endGradient="#c63931"
             startCoord={0}
             btnRadius={20}
-            btnColor={cssGlobalStyles.activeTint}
+            btnColor={'#E06862'}
             dialRadius={meditationSliderRadius}
             pathWidth={2}
             dialWidth={3}
@@ -102,25 +113,5 @@ class CircularSliderSet extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff'
-  },
-  slider1: {
-    position: 'absolute',
-    backgroundColor: 'orange',
-    top: 0,
-    left: 50
-  },
-  slider2: {
-    position: 'absolute',
-    top: 25,
-    left: 25
-  }
-})
 
 export default CircularSliderSet

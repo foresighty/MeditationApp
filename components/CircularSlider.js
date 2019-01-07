@@ -140,10 +140,12 @@ export default class CircleSlider extends Component {
 
           <G x={endCoord.x - bR} y={endCoord.y - bR}>
             <Circle
-              r={bR}
+              r={bR - 2}
               cx={bR}
               cy={bR}
-              fill={this.props.btnColor}
+              stroke={this.props.btnColor}
+              strokeWidth={2}
+              fill={'#4850AF'}
               {...this._panResponder.panHandlers}
             />
           </G>
