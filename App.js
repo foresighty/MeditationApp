@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import TimerScreen from './screens/TimerScreen'
 import AboutScreen from './screens/AboutScreen'
+import cssGlobalStyles from './utils/cssGlobalStyles'
 
 // Define the navigation stacks
 const rootNavigator = createBottomTabNavigator(
@@ -34,10 +35,10 @@ const rootNavigator = createBottomTabNavigator(
       }
     },
     tabBarOptions: {
-      activeBackgroundColor: '#4850AF',
-      inactiveBackgroundColor: '#4850AF',
-      activeTintColor: '#E06862',
-      inactiveTintColor: '#BBB'
+      activeBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
+      inactiveBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
+      activeTintColor: cssGlobalStyles.activeTint,
+      inactiveTintColor: cssGlobalStyles.inactiveTint
     }
   }
 )

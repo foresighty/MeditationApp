@@ -37,7 +37,9 @@ export default class CircleSlider extends Component {
         let yOrigin =
           this.state.yCenter - (this.props.dialRadius + this.props.btnRadius)
         let a = this.cartesianToPolar(gs.moveX - xOrigin, gs.moveY - yOrigin)
-        this.setState({ angle: a })
+        this.setState({ angle: a }),
+          // Callback function added to fire the onValueChange function in order to make changes in CircularSliderSet.
+          this.props.onValueChange(this.state.angle)
       }
     })
   }
@@ -86,7 +88,7 @@ export default class CircleSlider extends Component {
     let endCoord = this.polarToCartesian(this.state.angle)
 
     return (
-      <View style={{ flex: 1 }}>
+      <View>
         <Svg
           onLayout={this.doStuff}
           ref="circleslider"
@@ -107,7 +109,7 @@ export default class CircleSlider extends Component {
             strokeWidth={this.props.pathWidth}
             fill="none"
           />
-          <Text
+          {/* <Text
             x={width / 2}
             y={width / 2 + 50}
             fontSize={14}
@@ -115,7 +117,7 @@ export default class CircleSlider extends Component {
             textAnchor="middle"
           >
             {`Start Coord X: ${startCoord.x}, Y: ${startCoord.y}`}
-          </Text>
+          </Text> */}
           <Text
             x={width / 2}
             y={width / 2}
@@ -123,8 +125,7 @@ export default class CircleSlider extends Component {
             fill={this.props.textColor}
             textAnchor="middle"
           >
-            {this.props.showValue &&
-              this.props.onValueChange(this.state.angle) + ''}
+            {this.props.showValue && this.state.angle + ''}
           </Text>
           <Path
             stroke={'url(#gradient1)'}
