@@ -7,7 +7,8 @@ import cssGlobalStyles from '../utils/cssGlobalStyles'
 class TimerScreen extends Component {
   state = {
     meditationValue: 30, // 5 minutes (5 * 6 degrees)
-    intervalValue: 36 // 3 minutes (3 * 12 degrees)
+    intervalValue: 36, // 3 minutes (3 * 12 degrees)
+    prepTimeValue: 90
   }
 
   handleMeditationValueChange = angle => {
@@ -16,6 +17,10 @@ class TimerScreen extends Component {
 
   handleIntervalValueChange = angle => {
     console.log(`Timer Screen (Interval): ${Math.round(angle / 12)} minutes`)
+  }
+
+  handlePrepValueChange = angle => {
+    console.log(`Timer Screen (Prep): ${Math.round(angle / 12)} minutes`)
   }
 
   render() {
@@ -36,6 +41,8 @@ class TimerScreen extends Component {
           intervalValue={this.state.intervalValue}
           handleMeditationValueChange={this.handleMeditationValueChange}
           handleIntervalValueChange={this.handleIntervalValueChange}
+          prepTimeValue={this.state.prepTimeValue}
+          handlePrepValueChange={this.handlePrepValueChange}
         />
       </View>
     )

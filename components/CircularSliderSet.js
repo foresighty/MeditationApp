@@ -11,8 +11,11 @@ class CircularSliderSet extends Component {
 
   render() {
     // Dynamically get the width information to feed into the sliders below.
-    console.log('window dimensions:', Dimensions.get('window').width)
-    console.log('screen dimensions:', Dimensions.get('screen').width)
+    windowWidth = Dimensions.get('window').width
+    meditationSliderRadius = windowWidth / 2.5
+    intervalSliderRadius = meditationSliderRadius - 50
+    prepTimeSliderRadius = intervalSliderRadius - 50
+
     return (
       <View style={styles.container}>
         <View style={{ flex: 1, backgroundColor: '' }} />
@@ -27,21 +30,21 @@ class CircularSliderSet extends Component {
             startCoord={0}
             btnRadius={20}
             btnColor={cssGlobalStyles.activeTint}
-            dialRadius={375 / 2 - 20}
+            dialRadius={meditationSliderRadius}
             pathWidth={2}
             dialWidth={3}
-            backgroundColor={cssGlobalStyles.inactiveTint}
+            backgroundColor={cssGlobalStyles.sliderTint}
             showValue={false}
+            yCenter={
+              //50 pixels removed because of navigationbar
+              (Dimensions.get('window').height - 50) / 2
+            }
           />
-          {/* This styling needs to be made dynamic.
-            Top and Left Values are determined by each slider's radius.
-            The slider itself should size itself depending on the device width.
-          */}
           <View
             style={{
               position: 'absolute',
-              top: 150 - 80,
-              left: 150 - 80
+              top: meditationSliderRadius - intervalSliderRadius,
+              left: meditationSliderRadius - intervalSliderRadius
             }}
           >
             {/* Interval Controls */}
@@ -54,11 +57,43 @@ class CircularSliderSet extends Component {
               startCoord={0}
               btnRadius={20}
               btnColor="#78edc0"
-              dialRadius={80}
+              dialRadius={intervalSliderRadius}
               pathWidth={2}
               dialWidth={3}
-              backgroundColor={cssGlobalStyles.inactiveTint}
+              backgroundColor={cssGlobalStyles.sliderTint}
               showValue={false}
+              yCenter={
+                //50 pixels removed because of navigationbar
+                (Dimensions.get('window').height - 50) / 2
+              }
+            />
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              top: meditationSliderRadius - prepTimeSliderRadius,
+              left: meditationSliderRadius - prepTimeSliderRadius
+            }}
+          >
+            {/* PrepTime Controls */}
+            <CircularSlider
+              value={this.props.prepTimeValue}
+              onValueChange={this.props.handlePrepValueChange}
+              textColor={'#333'}
+              startGradient="#87c6ff"
+              endGradient="#1491ff"
+              startCoord={0}
+              btnRadius={20}
+              btnColor="#3aa3ff"
+              dialRadius={prepTimeSliderRadius}
+              pathWidth={2}
+              dialWidth={3}
+              backgroundColor={cssGlobalStyles.sliderTint}
+              showValue={false}
+              yCenter={
+                //50 pixels removed because of navigationbar
+                (Dimensions.get('window').height - 50) / 2
+              }
             />
           </View>
         </View>

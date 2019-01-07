@@ -38,7 +38,10 @@ const rootNavigator = createBottomTabNavigator(
       activeBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
       inactiveBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
       activeTintColor: cssGlobalStyles.activeTint,
-      inactiveTintColor: cssGlobalStyles.inactiveTint
+      inactiveTintColor: cssGlobalStyles.inactiveTint,
+      style: {
+        height: 50
+      }
     }
   }
 )
