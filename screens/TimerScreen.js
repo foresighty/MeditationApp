@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, SafeAreaView, Animated } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Animated,
+  TouchableOpacity
+} from 'react-native'
 
 import CircularSliderSet from '../components/CircularSliderSet'
 import cssGlobalStyles from '../utils/cssGlobalStyles'
@@ -13,7 +19,8 @@ class TimerScreen extends Component {
     prepTimeValue: 90,
     prepTimeSeconds: 15,
     warning: false,
-    warningAnim: new Animated.Value(0)
+    warningAnim: new Animated.Value(0),
+    buttonAnim: new Animated.Value(1)
   }
 
   handleMeditationValueChange = angle => {
@@ -43,14 +50,39 @@ class TimerScreen extends Component {
   isTimeValid = () => {
     // Check if the interval time exceeds the meditation time.
     const { meditationMinutes, intervalMinutes } = this.state
-    if (intervalMinutes > meditationMinutes) {
-      Animated.timing(this.state.warningAnim, {
-        toValue: 1
-      }).start()
-    } else if (intervalMinutes <= meditationMinutes) {
-      Animated.timing(this.state.warningAnim, {
-        toValue: 0
-      }).start()
+    if (intervalMinutes > meditationMinutes && !this.state.warning) {
+      this.setState(
+        {
+          warning: true
+        },
+        // toggle a state variable in order to disable or enable the button
+        Animated.sequence([
+          Animated.timing(this.state.buttonAnim, {
+            toValue: 0,
+            duration: 250
+          }),
+          Animated.timing(this.state.warningAnim, {
+            toValue: 1,
+            duration: 250
+          })
+        ]).start()
+      )
+    } else if (intervalMinutes <= meditationMinutes && this.state.warning) {
+      this.setState(
+        {
+          warning: false
+        },
+        Animated.sequence([
+          Animated.timing(this.state.warningAnim, {
+            toValue: 0,
+            duration: 250
+          }),
+          Animated.timing(this.state.buttonAnim, {
+            toValue: 1,
+            duration: 250
+          })
+        ]).start()
+      )
     }
   }
 
@@ -99,7 +131,7 @@ class TimerScreen extends Component {
               Preparation Time: {this.state.prepTimeSeconds} s
             </Text>
           </View>
-          <View style={{ marginTop: 30, marginBottom: 30 }}>
+          <View style={{ marginTop: 30, marginBottom: 40 }}>
             <CircularSliderSet
               meditationValue={this.state.meditationValue}
               intervalValue={this.state.intervalValue}
@@ -112,19 +144,52 @@ class TimerScreen extends Component {
               prepTimeSeconds={this.state.prepTimeSeconds}
             />
           </View>
-          <Animated.Text
+
+          {/* Button and warning text */}
+          <View
             style={{
-              opacity: this.state.warningAnim,
-              paddingLeft: 30,
-              paddingRight: 30,
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: cssGlobalStyles.warning,
-              textAlign: 'center'
+              posiiton: 'relative',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
           >
-            Warning: Interval time is longer than meditation time.
-          </Animated.Text>
+            <Animated.Text
+              style={{
+                //opacity: this.state.warningAnim,
+                opacity: this.state.warningAnim,
+                paddingLeft: 30,
+                paddingRight: 30,
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: cssGlobalStyles.warning,
+                textAlign: 'center',
+                position: 'absolute'
+              }}
+            >
+              Warning: Interval time is longer than meditation time.
+            </Animated.Text>
+            <Animated.View
+              style={{
+                opacity: this.state.buttonAnim,
+                position: 'absolute'
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: 'orange',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  paddingLeft: 30,
+                  paddingRight: 30,
+                  borderRadius: 50
+                }}
+                disabled={this.state.warning}
+                onPress={() => console.log('Pressed')}
+              >
+                <Text style={{ fontSize: 24, color: 'black' }}>START</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
         </View>
       </SafeAreaView>
     )
