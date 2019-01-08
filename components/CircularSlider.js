@@ -33,10 +33,7 @@ export default class CircleSlider extends Component {
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gs) => true,
-      onStartShouldSetPanResponderCapture: (e, gs) => true,
       onMoveShouldSetPanResponder: (e, gs) => true,
-      onMoveShouldSetPanResponderCapture: (e, gs) => true,
       onPanResponderMove: (e, gs) => {
         let xOrigin =
           this.state.xCenter - (this.props.dialRadius + this.props.btnRadius)
@@ -51,10 +48,7 @@ export default class CircleSlider extends Component {
     })
 
     this._panResponder2 = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gs) => true,
-      onStartShouldSetPanResponderCapture: (e, gs) => true,
       onMoveShouldSetPanResponder: (e, gs) => true,
-      onMoveShouldSetPanResponderCapture: (e, gs) => true,
       onPanResponderMove: (e, gs) => {
         let xOrigin =
           //this.state.xCenter2 -
@@ -77,31 +71,16 @@ export default class CircleSlider extends Component {
     })
 
     this._panResponder3 = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gs) => true,
-      onStartShouldSetPanResponderCapture: (e, gs) => true,
       onMoveShouldSetPanResponder: (e, gs) => true,
-      onMoveShouldSetPanResponderCapture: (e, gs) => true,
       onPanResponderMove: (e, gs) => {
         let xOrigin =
           this.state.xCenter -
           (this.props.dialRadius + this.props.btnRadius) +
           (this.props.dialRadius3 / 2 + this.props.btnRadius3)
-        /*this.state.xCenter3 -
-          (this.props.dialRadius3 / 2 - this.props.btnRadius3 / 2)
-          // inital attemp
-        this.state.xCenter3 -
-          (this.props.dialRadius + this.props.btnRadius) +
-          (this.props.dialRadius3 + this.props.btnRadius3) / 2*/
         let yOrigin =
           this.state.yCenter -
           (this.props.dialRadius + this.props.btnRadius) +
           (this.props.dialRadius3 / 2 + this.props.btnRadius3)
-        /*this.state.yCenter3 
-          (this.props.dialRadius3 / 2 - this.props.btnRadius3 / 2)
-          //initial attempt
-        this.state.yCenter -
-          (this.props.dialRadius + this.props.btnRadius) +
-          (this.props.dialRadius3 + this.props.btnRadius3) / 2*/
 
         let a = this.cartesianToPolar2(gs.moveX - xOrigin, gs.moveY - yOrigin)
         this.setState({ angle3: a }),
@@ -187,7 +166,6 @@ export default class CircleSlider extends Component {
   }
 
   handleMeasure = (ox, oy, width, height, px, py) => {
-    console.log('inside handle1')
     this.setState({
       xCenter: px + (this.props.dialRadius + this.props.btnRadius),
       yCenter: py + (this.props.dialRadius + this.props.btnRadius)
@@ -273,8 +251,18 @@ export default class CircleSlider extends Component {
               fill={'#4850AF'}
               {...this._panResponder.panHandlers}
             />
+            <Text
+              x={bR}
+              y={bR + this.props.textSize / 2 - 2}
+              fontSize={this.props.textSize}
+              fill={this.props.textColor}
+              textAnchor="middle"
+            >
+              {this.props.timeValue}
+            </Text>
           </G>
           {/* 2nd circle */}
+
           <Defs>
             <LinearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
               <Stop offset="0%" stopColor={this.props.startGradient2} />
@@ -317,6 +305,15 @@ export default class CircleSlider extends Component {
               fill={'#4850AF'}
               {...this._panResponder2.panHandlers}
             />
+            <Text
+              x={bR2}
+              y={bR2 + this.props.textSize2 / 2 - 2}
+              fontSize={this.props.textSize2}
+              fill={this.props.textColor2}
+              textAnchor="middle"
+            >
+              {this.props.timeValue2}
+            </Text>
           </G>
           {/* 3rd circle */}
           <Defs>
@@ -361,6 +358,15 @@ export default class CircleSlider extends Component {
               fill={'#4850AF'}
               {...this._panResponder3.panHandlers}
             />
+            <Text
+              x={bR3}
+              y={bR3 + this.props.textSize3 / 2 - 2}
+              fontSize={this.props.textSize3}
+              fill={this.props.textColor3}
+              textAnchor="middle"
+            >
+              {this.props.timeValue3}
+            </Text>
           </G>
         </Svg>
       </View>
@@ -375,7 +381,7 @@ CircleSlider.defaultProps = {
   dialWidth: 25,
   pathWidth: 25,
   textColor: 'grey',
-  textSize: 50,
+  textSize: 14,
   value: 0,
   //xCenter: Dimensions.get('window').width / 2,
   //yCenter: Dimensions.get('window').height / 2,
