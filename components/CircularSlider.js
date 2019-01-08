@@ -22,9 +22,12 @@ export default class CircleSlider extends Component {
       angle: this.props.value,
       xCenter: 0,
       yCenter: 0,
-      angle2: this.props.value2,
       xCenter2: 0,
-      yCenter2: 0
+      yCenter2: 0,
+      xCenter3: 0,
+      yCenter3: 0,
+      angle2: this.props.value2,
+      angle3: this.props.value3
     }
   }
 
@@ -54,10 +57,14 @@ export default class CircleSlider extends Component {
       onMoveShouldSetPanResponderCapture: (e, gs) => true,
       onPanResponderMove: (e, gs) => {
         let xOrigin =
+          //this.state.xCenter2 -
+          //(this.props.dialRadius2 / 2 - this.props.btnRadius2 / 2)
           this.state.xCenter -
           (this.props.dialRadius + this.props.btnRadius) +
           (this.props.dialRadius2 + this.props.btnRadius2) / 2
         let yOrigin =
+          //this.state.yCenter2 -
+          //(this.props.dialRadius2 / 2 - this.props.btnRadius2 / 2)
           this.state.yCenter -
           (this.props.dialRadius + this.props.btnRadius) +
           (this.props.dialRadius2 + this.props.btnRadius2) / 2
@@ -66,6 +73,40 @@ export default class CircleSlider extends Component {
         this.setState({ angle2: a }),
           // Callback function added to fire the onValueChange function in order to make changes in CircularSliderSet.
           this.props.onValueChange2(this.state.angle2)
+      }
+    })
+
+    this._panResponder3 = PanResponder.create({
+      onStartShouldSetPanResponder: (e, gs) => true,
+      onStartShouldSetPanResponderCapture: (e, gs) => true,
+      onMoveShouldSetPanResponder: (e, gs) => true,
+      onMoveShouldSetPanResponderCapture: (e, gs) => true,
+      onPanResponderMove: (e, gs) => {
+        let xOrigin =
+          this.state.xCenter -
+          (this.props.dialRadius + this.props.btnRadius) +
+          (this.props.dialRadius3 / 2 + this.props.btnRadius3)
+        /*this.state.xCenter3 -
+          (this.props.dialRadius3 / 2 - this.props.btnRadius3 / 2)
+          // inital attemp
+        this.state.xCenter3 -
+          (this.props.dialRadius + this.props.btnRadius) +
+          (this.props.dialRadius3 + this.props.btnRadius3) / 2*/
+        let yOrigin =
+          this.state.yCenter -
+          (this.props.dialRadius + this.props.btnRadius) +
+          (this.props.dialRadius3 / 2 + this.props.btnRadius3)
+        /*this.state.yCenter3 
+          (this.props.dialRadius3 / 2 - this.props.btnRadius3 / 2)
+          //initial attempt
+        this.state.yCenter -
+          (this.props.dialRadius + this.props.btnRadius) +
+          (this.props.dialRadius3 + this.props.btnRadius3) / 2*/
+
+        let a = this.cartesianToPolar2(gs.moveX - xOrigin, gs.moveY - yOrigin)
+        this.setState({ angle3: a }),
+          // Callback function added to fire the onValueChange function in order to make changes in CircularSliderSet.
+          this.props.onValueChange3(this.state.angle3)
       }
     })
   }
@@ -83,6 +124,16 @@ export default class CircleSlider extends Component {
   polarToCartesian2(angle) {
     let r = this.props.dialRadius2
     let hC = this.props.dialRadius2 + this.props.btnRadius2
+    let a = ((angle - 90) * Math.PI) / 180.0
+
+    let x = hC + r * Math.cos(a)
+    let y = hC + r * Math.sin(a)
+    return { x, y }
+  }
+
+  polarToCartesian3(angle) {
+    let r = this.props.dialRadius3
+    let hC = this.props.dialRadius3 + this.props.btnRadius3
     let a = ((angle - 90) * Math.PI) / 180.0
 
     let x = hC + r * Math.cos(a)
@@ -120,27 +171,35 @@ export default class CircleSlider extends Component {
     }
   }
 
+  cartesianToPolar3(x, y) {
+    let hC = this.props.dialRadius3 + this.props.btnRadius3
+
+    if (x === 0) {
+      return y > hC ? 0 : 180
+    } else if (y === 0) {
+      return x > hC ? 90 : 270
+    } else {
+      return (
+        Math.round((Math.atan((y - hC) / (x - hC)) * 180) / Math.PI) +
+        (x > hC ? 90 : 270)
+      )
+    }
+  }
+
   handleMeasure = (ox, oy, width, height, px, py) => {
+    console.log('inside handle1')
     this.setState({
       xCenter: px + (this.props.dialRadius + this.props.btnRadius),
       yCenter: py + (this.props.dialRadius + this.props.btnRadius)
-    })
-  }
-
-  handleMeasure2 = (ox, oy, width, height, px, py) => {
-    this.setState({
-      xCenter2: px + (this.props.dialRadius2 + this.props.btnRadius2),
-      yCenter2: py + (this.props.dialRadius2 + this.props.btnRadius2)
+      // xCenter2: px + (this.props.dialRadius2 + this.props.btnRadius2),
+      // yCenter2: py + (this.props.dialRadius2 + this.props.btnRadius2),
+      // xCenter3: px + (this.props.dialRadius3 + this.props.btnRadius3),
+      // yCenter3: py + (this.props.dialRadius3 + this.props.btnRadius3)
     })
   }
 
   doStuff = () => {
     this.refs.circleslider.measure(this.handleMeasure)
-    this.doStuff2
-  }
-
-  doStuff2 = () => {
-    this.refs.circleslider.measure(this.handleMeasure2)
   }
 
   render() {
@@ -155,6 +214,12 @@ export default class CircleSlider extends Component {
     let dR2 = this.props.dialRadius2
     let startCoord2 = this.polarToCartesian2(this.props.startCoord2)
     let endCoord2 = this.polarToCartesian2(this.state.angle2)
+
+    let width3 = (this.props.dialRadius3 + this.props.btnRadius3) * 2
+    let bR3 = this.props.btnRadius3
+    let dR3 = this.props.dialRadius3
+    let startCoord3 = this.polarToCartesian3(this.props.startCoord3)
+    let endCoord3 = this.polarToCartesian3(this.state.angle3)
 
     return (
       <View>
@@ -253,6 +318,50 @@ export default class CircleSlider extends Component {
               {...this._panResponder2.panHandlers}
             />
           </G>
+          {/* 3rd circle */}
+          <Defs>
+            <LinearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+              <Stop offset="0%" stopColor={this.props.startGradient3} />
+              <Stop offset="100%" stopColor={this.props.endGradient3} />
+            </LinearGradient>
+          </Defs>
+          <Circle
+            r={dR3}
+            cx={width3 / 2}
+            cy={width3 / 2}
+            y={(width - width3) / 2}
+            x={(width - width3) / 2}
+            stroke={this.props.backgroundColor3}
+            strokeWidth={this.props.pathWidth3}
+            fill="none"
+          />
+          <Path
+            y={(width - width3) / 2}
+            x={(width - width3) / 2}
+            stroke={'url(#gradient3)'}
+            strokeWidth={this.props.dialWidth3}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d={`M${startCoord3.x} ${startCoord3.y} A ${dR3} ${dR3} 0 ${
+              (this.props.startCoord3 + 180) % 360 > this.state.angle3 ? 0 : 1
+            } 1 ${endCoord3.x} ${endCoord3.y}`}
+          />
+
+          <G
+            x={endCoord3.x - bR3 + (width - width3) / 2}
+            y={endCoord3.y - bR3 + (width - width3) / 2}
+          >
+            <Circle
+              r={bR3 - 2}
+              cx={bR3}
+              cy={bR3}
+              stroke={this.props.btnColor3}
+              strokeWidth={2}
+              fill={'#4850AF'}
+              {...this._panResponder3.panHandlers}
+            />
+          </G>
         </Svg>
       </View>
     )
@@ -276,6 +385,7 @@ CircleSlider.defaultProps = {
   backgroundColor: 'white',
   startCoord: 0,
   onValueChange: x => x,
+  // Slider 2
   btnRadius2: 13,
   btnColor2: 'yellow',
   dialRadius2: 130,
@@ -289,5 +399,20 @@ CircleSlider.defaultProps = {
   endGradient2: '#A6FFCB',
   backgroundColor2: 'white',
   startCoord2: 0,
-  onValueChange2: x => x
+  onValueChange2: x => x,
+  // Slider 3
+  btnRadius3: 13,
+  btnColor3: 'yellow',
+  dialRadius3: 130,
+  dialWidth3: 25,
+  pathWidth3: 25,
+  textColor3: 'grey',
+  textSize3: 50,
+  value3: 0,
+  showValue3: true,
+  startGradient3: '#12D8FA',
+  endGradient3: '#A6FFCB',
+  backgroundColor3: 'white',
+  startCoord3: 0,
+  onValueChange3: x => x
 }

@@ -45,6 +45,20 @@ class CircularSliderSet extends Component {
           dialWidth2={3}
           backgroundColor2={cssGlobalStyles.sliderTint}
           showValue2={false}
+          //slider3
+          value3={this.props.prepTimeValue}
+          onValueChange3={this.props.handlePrepValueChange}
+          textColor3={'#333'}
+          startGradient3="#87c6ff"
+          endGradient3="#1491ff"
+          startCoord3={0}
+          btnRadius3={20}
+          btnColor3="#3aa3ff"
+          dialRadius3={prepTimeSliderRadius}
+          pathWidth3={2}
+          dialWidth3={3}
+          backgroundColor3={cssGlobalStyles.sliderTint}
+          showValue3={false}
         />
         <View style={{ flex: 1 }} />
       </View>
