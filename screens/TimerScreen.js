@@ -177,7 +177,13 @@ class TimerScreen extends Component {
             >
               <MainButton
                 disabled={this.state.warning}
-                onPress={() => this.props.navigation.navigate('TimerRun')}
+                onPress={() =>
+                  this.props.navigation.navigate('TimerRun', {
+                    meditationMinutes: this.state.meditationMinutes,
+                    intervalMinutes: this.state.intervalMinutes,
+                    prepSeconds: this.state.prepTimeSeconds
+                  })
+                }
               >
                 START
               </MainButton>
