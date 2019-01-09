@@ -1,11 +1,9 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
-import KeepAwake from 'react-native-keep-awake'
+//import KeepAwake from 'react-native-keep-awake'
 
 import MainButton from '../components/UI/MainButton'
-
-let timer = 0
 
 class TimerRunScreen extends React.Component {
   state = {
@@ -13,6 +11,8 @@ class TimerRunScreen extends React.Component {
     intervalMinutes: this.props.navigation.state.params.intervalMinutes,
     prepSeconds: this.props.navigation.state.params.prepSeconds
   }
+
+  timer = 0
 
   componentDidMount() {
     this.runTimer()
@@ -29,6 +29,7 @@ class TimerRunScreen extends React.Component {
     timer = BackgroundTimer.setInterval(() => {
       if (this.state.prepSeconds === 0) {
         BackgroundTimer.clearInterval(timer)
+        BackgroundTimer.stop()
         return
       }
       this.setState({
@@ -40,7 +41,6 @@ class TimerRunScreen extends React.Component {
   stopTimer = () => {
     BackgroundTimer.clearInterval(timer)
     BackgroundTimer.stop()
-    //BackgroundTimer.clearInterval(timer)
   }
 
   render() {
@@ -57,7 +57,7 @@ class TimerRunScreen extends React.Component {
         >
           TIMER OPTIONS
         </MainButton>
-        <KeepAwake />
+        {/* <KeepAwake /> */}
       </View>
     )
   }
