@@ -25,6 +25,7 @@ class TimerRunScreen extends React.Component {
   // Main Timer Function
   // Uses react-native-background-timer in order to keep the clock running when the app in not in the foreground
   runTimer = () => {
+    BackgroundTimer.start()
     timer = BackgroundTimer.setInterval(() => {
       if (this.state.prepSeconds === 0) {
         BackgroundTimer.clearInterval(timer)
@@ -38,6 +39,8 @@ class TimerRunScreen extends React.Component {
 
   stopTimer = () => {
     BackgroundTimer.clearInterval(timer)
+    BackgroundTimer.stop()
+    //BackgroundTimer.clearInterval(timer)
   }
 
   render() {
