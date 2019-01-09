@@ -1,16 +1,36 @@
 import React from 'react'
-import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createAppContainer
+} from 'react-navigation'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import TimerScreen from './screens/TimerScreen'
+import TimerRunScreen from './screens/TimerRunScreen'
 import AboutScreen from './screens/AboutScreen'
 import cssGlobalStyles from './utils/cssGlobalStyles'
 
 // Define the navigation stacks
-const rootNavigator = createBottomTabNavigator(
+const TimerNavigator = createStackNavigator(
+  {
+    TimerSet: {
+      screen: TimerScreen
+    },
+    TimerRun: {
+      screen: TimerRunScreen
+    }
+  },
+  {
+    initialRouteName: 'TimerSet',
+    headerMode: 'none'
+  }
+)
+
+const RootNavigator = createBottomTabNavigator(
   {
     Timer: {
-      screen: TimerScreen
+      screen: TimerNavigator
     },
     About: {
       screen: AboutScreen
@@ -47,7 +67,7 @@ const rootNavigator = createBottomTabNavigator(
 )
 
 // Wrap the root navigation stack into <AppContainer />
-const AppContainer = createAppContainer(rootNavigator)
+const AppContainer = createAppContainer(RootNavigator)
 
 // Render the <AppContainer />
 class App extends React.Component {

@@ -13,6 +13,7 @@ import Svg, {
   LinearGradient,
   Stop
 } from 'react-native-svg'
+import cssGlobalStyles from '../utils/cssGlobalStyles'
 
 export default class CircleSlider extends Component {
   constructor(props) {
@@ -248,7 +249,7 @@ export default class CircleSlider extends Component {
               cy={bR}
               stroke={this.props.btnColor}
               strokeWidth={2}
-              fill={'#4850AF'}
+              fill={cssGlobalStyles.primaryBackgroundColor}
               {...this._panResponder.panHandlers}
             />
             <Text
@@ -302,7 +303,7 @@ export default class CircleSlider extends Component {
               cy={bR2}
               stroke={this.props.btnColor2}
               strokeWidth={2}
-              fill={'#4850AF'}
+              fill={cssGlobalStyles.primaryBackgroundColor}
               {...this._panResponder2.panHandlers}
             />
             <Text
@@ -355,7 +356,7 @@ export default class CircleSlider extends Component {
               cy={bR3}
               stroke={this.props.btnColor3}
               strokeWidth={2}
-              fill={'#4850AF'}
+              fill={cssGlobalStyles.primaryBackgroundColor}
               {...this._panResponder3.panHandlers}
             />
             <Text

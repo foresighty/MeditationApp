@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 
 import CircularSliderSet from '../components/CircularSliderSet'
+import MainButton from '../components/UI/MainButton'
 import cssGlobalStyles from '../utils/cssGlobalStyles'
 
 class TimerScreen extends Component {
@@ -48,7 +49,7 @@ class TimerScreen extends Component {
   }
 
   isTimeValid = () => {
-    // Check if the interval time exceeds the meditation time.
+    // Check if the interval time exceeds the meditation time, and start the animation between button and warning
     const { meditationMinutes, intervalMinutes } = this.state
     if (intervalMinutes > meditationMinutes && !this.state.warning) {
       this.setState(
@@ -59,11 +60,11 @@ class TimerScreen extends Component {
         Animated.sequence([
           Animated.timing(this.state.buttonAnim, {
             toValue: 0,
-            duration: 250
+            duration: 150
           }),
           Animated.timing(this.state.warningAnim, {
             toValue: 1,
-            duration: 250
+            duration: 150
           })
         ]).start()
       )
@@ -75,11 +76,11 @@ class TimerScreen extends Component {
         Animated.sequence([
           Animated.timing(this.state.warningAnim, {
             toValue: 0,
-            duration: 250
+            duration: 150
           }),
           Animated.timing(this.state.buttonAnim, {
             toValue: 1,
-            duration: 250
+            duration: 150
           })
         ]).start()
       )
@@ -174,20 +175,12 @@ class TimerScreen extends Component {
                 position: 'absolute'
               }}
             >
-              <TouchableOpacity
-                style={{
-                  backgroundColor: 'orange',
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  paddingLeft: 30,
-                  paddingRight: 30,
-                  borderRadius: 50
-                }}
+              <MainButton
                 disabled={this.state.warning}
-                onPress={() => console.log('Pressed')}
+                onPress={() => this.props.navigation.navigate('TimerRun')}
               >
-                <Text style={{ fontSize: 24, color: 'black' }}>START</Text>
-              </TouchableOpacity>
+                START
+              </MainButton>
             </Animated.View>
           </View>
         </View>
