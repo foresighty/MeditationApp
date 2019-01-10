@@ -3,7 +3,8 @@ package com.meditationapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.corbt.keepawake.KCKeepAwakePackage;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.horcrux.svg.SvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new KCKeepAwakePackage(),
+            new RNSoundPackage(),
+            new ReactVideoPackage(),
             new BackgroundTimerPackage(),
             new SvgPackage(),
             new VectorIconsPackage(),

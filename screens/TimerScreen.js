@@ -18,7 +18,7 @@ class TimerScreen extends Component {
     intervalValue: 36, // 3 minutes (3 * 12 degrees)
     intervalMinutes: 3,
     prepTimeValue: 90,
-    prepTimeSeconds: 15,
+    prepTimeSeconds: 5,
     warning: false,
     warningAnim: new Animated.Value(0),
     buttonAnim: new Animated.Value(1)

@@ -1,9 +1,22 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
-//import KeepAwake from 'react-native-keep-awake'
+import Sound from 'react-native-sound'
 
 import MainButton from '../components/UI/MainButton'
+
+// Enable audio playback in silence mode
+Sound.setCategory('Playback')
+
+// Define the 'gong' sound effect
+const gong = new Sound('gamelangong.mp3', Sound.MAIN_BUNDLE, error => {
+  if (error) {
+    console.log('failed to load the sound', error)
+    return
+  }
+  // loaded successfully
+  console.log(`duration in seconds: ${gong.getDuration()}`)
+})
 
 class TimerRunScreen extends React.Component {
   state = {
@@ -19,6 +32,8 @@ class TimerRunScreen extends React.Component {
   }
 
   componentWillUnmount() {
+    // reset the gong sound effect.
+    gong.pause().setCurrentTime(0)
     this.stopTimer()
   }
 
@@ -28,6 +43,14 @@ class TimerRunScreen extends React.Component {
     BackgroundTimer.start()
     timer = BackgroundTimer.setInterval(() => {
       if (this.state.prepSeconds === 0) {
+        gong.play(success => {
+          if (success) {
+            console.log('Gong finished playing')
+            //gong.pause()
+          } else {
+            console.log('Playback failed')
+          }
+        })
         BackgroundTimer.clearInterval(timer)
         BackgroundTimer.stop()
         return
@@ -57,7 +80,6 @@ class TimerRunScreen extends React.Component {
         >
           TIMER OPTIONS
         </MainButton>
-        {/* <KeepAwake /> */}
       </View>
     )
   }
