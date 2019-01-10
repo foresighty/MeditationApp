@@ -1,5 +1,12 @@
 import React from 'react'
-import { View, Text, Dimensions, Platform } from 'react-native'
+import {
+  View,
+  Text,
+  Dimensions,
+  Platform,
+  Animated,
+  Easing
+} from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import Sound from 'react-native-sound'
 import styled from 'styled-components/native'
@@ -21,6 +28,11 @@ const gong = new Sound('gamelangong.mp3', Sound.MAIN_BUNDLE, error => {
   // loaded successfully
   console.log(`duration in seconds: ${gong.getDuration()}`)
 })
+
+// Animated CircleProgress
+const AnimatedCircleProgress = Animated.createAnimatedComponent(
+  CircularProgress
+)
 
 const MainTimeDisplayText = styled.Text`
   color: white;
@@ -44,7 +56,9 @@ class TimerRunScreen extends React.Component {
     meditationSeconds:
       this.props.navigation.state.params.meditationMinutes * 60,
     isPrepRunning: true,
-    percentage: 100
+    percentage: 100,
+    animPercentage: new Animated.Value(100)
+    // could reset with this.state.percentage.setValue(100)
   }
 
   timer = 0
@@ -94,6 +108,7 @@ class TimerRunScreen extends React.Component {
         const updatedPercentage =
           ((this.state.meditationSeconds - 1) / 60 / this.state.totalMinutes) *
           100
+        this.animate(updatedPercentage)
         this.setState({
           meditationSeconds: this.state.meditationSeconds - 1,
           percentage: updatedPercentage
@@ -105,6 +120,13 @@ class TimerRunScreen extends React.Component {
   stopTimer = () => {
     BackgroundTimer.clearInterval(timer)
     BackgroundTimer.stop()
+  }
+
+  animate = newPercentage => {
+    Animated.timing(this.state.animPercentage, {
+      toValue: newPercentage,
+      duration: 1000
+    }).start()
   }
 
   formatTime = () => {
@@ -133,8 +155,8 @@ class TimerRunScreen extends React.Component {
           backgroundColor: cssGlobalStyles.primaryBackgroundColor
         }}
       >
-        <CircularProgress
-          percentage={this.state.percentage}
+        <AnimatedCircleProgress
+          percentage={this.state.animPercentage}
           size={windowWidth * 0.75}
           progressWidth={(windowWidth * 0.75) / 2 - 20}
           blankColor={cssGlobalStyles.sliderBGTint}
@@ -148,7 +170,7 @@ class TimerRunScreen extends React.Component {
                 : this.formatTime()}
             </MainTimeDisplayText>
           </View>
-        </CircularProgress>
+        </AnimatedCircleProgress>
         <Text>{`Interval time: ${intervalMinutes} minutes`}</Text>
         <MainButton
           disabled={false}
