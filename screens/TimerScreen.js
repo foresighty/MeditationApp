@@ -13,12 +13,12 @@ import cssGlobalStyles from '../utils/cssGlobalStyles'
 
 class TimerScreen extends Component {
   state = {
-    meditationValue: 6, // 5 minutes (5 * 6 degrees)
-    meditationMinutes: 1,
+    meditationValue: 18, // 5 minutes (5 * 6 degrees)
+    meditationMinutes: 3,
     intervalValue: 12, // 3 minutes (3 * 12 degrees)
     intervalMinutes: 1,
-    prepTimeValue: 30, // 5 seconds (5 * 6 degrees)
-    prepTimeSeconds: 5,
+    prepTimeValue: 18, // 5 seconds (5 * 6 degrees)
+    prepTimeSeconds: 3,
     warning: false,
     warningAnim: new Animated.Value(0),
     buttonAnim: new Animated.Value(1)
