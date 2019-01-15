@@ -157,8 +157,12 @@ class TimerRunScreen extends React.Component {
   }
 
   render() {
-    const { meditationMinutes, intervalMinutes, prepSeconds } = this.state
+    const { intervalMinutes } = this.state
     const windowWidth = Dimensions.get('screen').width
+    const meditationProgressSize = windowWidth * 0.75 // The diameter of the circular meditation progress bar
+    const meditationProgressWidth = meditationProgressSize / 2 - 15 // The width of the circular meditation bar -- last digit is the pixel width
+    const intervalProgressSize = meditationProgressSize - 50 // interval timer
+    const intervalProgressWidth = intervalProgressSize / 2 - 5 // interval timer
 
     return (
       <View
@@ -169,21 +173,32 @@ class TimerRunScreen extends React.Component {
           backgroundColor: cssGlobalStyles.primaryBackgroundColor
         }}
       >
+        {/* Meditation Timer Circle Progress Bar */}
         <AnimatedCircleProgress
           percentage={this.state.animPercentage}
-          size={windowWidth * 0.75}
-          progressWidth={(windowWidth * 0.75) / 2 - 20}
+          size={meditationProgressSize}
+          progressWidth={meditationProgressWidth}
           blankColor={cssGlobalStyles.sliderBGTint}
           donutColor={cssGlobalStyles.sliderMeditationTint}
           fillColor={cssGlobalStyles.primaryBackgroundColor}
         >
-          <View>
-            <MainTimeDisplayText>
-              {this.state.isPrepRunning
-                ? `${prettyTime(this.state.prepSeconds, '0', 2)}s`
-                : this.formatTime()}
-            </MainTimeDisplayText>
-          </View>
+          {/* Nested Interval Timer Progress Bar */}
+          <AnimatedCircleProgress
+            percentage={this.state.animPercentage}
+            size={intervalProgressSize}
+            progressWidth={intervalProgressWidth}
+            blankColor={cssGlobalStyles.sliderBGTint}
+            donutColor={cssGlobalStyles.sliderMeditationTint}
+            fillColor={cssGlobalStyles.primaryBackgroundColor}
+          >
+            <View>
+              <MainTimeDisplayText>
+                {this.state.isPrepRunning
+                  ? `${prettyTime(this.state.prepSeconds, '0', 2)}s`
+                  : this.formatTime()}
+              </MainTimeDisplayText>
+            </View>
+          </AnimatedCircleProgress>
         </AnimatedCircleProgress>
         <Text>{`Interval time: ${intervalMinutes} minutes`}</Text>
         <MainButton
