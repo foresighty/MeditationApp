@@ -100,14 +100,27 @@ class TimerRunScreen extends React.Component {
         // end prep time code and set the isPrepRunning flag to false
       } else if (this.state.prepSeconds === 0 && this.state.isPrepRunning) {
         gong.play()
-        this.setState({
-          isPrepRunning: false
-        })
-        // Code for when meditation time is running
-      } else if (this.state.meditationSeconds > 0) {
+        // make a call to animate the meditation timer when the prep timer finishes
         const updatedPercentage =
           ((this.state.meditationSeconds - 1) / 60 / this.state.totalMinutes) *
           100
+        this.animate(updatedPercentage)
+        // stop the prep timer
+        this.setState({
+          isPrepRunning: false
+        })
+        /* MEDITATION TIMER RUNNING */
+      } else if (this.state.meditationSeconds > 0) {
+        let updatedPercentage = 0
+        if (this.state.percentage !== 0) {
+          // subtracting 2 from the seconds 'anticipates' the next second. This way the animation fiishes at 0
+          // by the meditationSeconds reaches 0
+          updatedPercentage =
+            ((this.state.meditationSeconds - 2) /
+              60 /
+              this.state.totalMinutes) *
+            100
+        }
         this.animate(updatedPercentage)
         this.setState({
           meditationSeconds: this.state.meditationSeconds - 1,
@@ -125,7 +138,8 @@ class TimerRunScreen extends React.Component {
   animate = newPercentage => {
     Animated.timing(this.state.animPercentage, {
       toValue: newPercentage,
-      duration: 1000
+      duration: 1100, // 1100 is smoother?
+      easing: Easing.linear
     }).start()
   }
 
@@ -145,7 +159,7 @@ class TimerRunScreen extends React.Component {
   render() {
     const { meditationMinutes, intervalMinutes, prepSeconds } = this.state
     const windowWidth = Dimensions.get('screen').width
-    console.log((windowWidth * 0.75) / 2 - 20)
+
     return (
       <View
         style={{
@@ -160,7 +174,7 @@ class TimerRunScreen extends React.Component {
           size={windowWidth * 0.75}
           progressWidth={(windowWidth * 0.75) / 2 - 20}
           blankColor={cssGlobalStyles.sliderBGTint}
-          donutColor={cssGlobalStyles.activeTint}
+          donutColor={cssGlobalStyles.sliderMeditationTint}
           fillColor={cssGlobalStyles.primaryBackgroundColor}
         >
           <View>
