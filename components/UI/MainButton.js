@@ -22,4 +22,8 @@ class MainButton extends React.Component {
   }
 }
 
+MainButton.defaultProps = {
+  disabled: false
+}
+
 export default MainButton

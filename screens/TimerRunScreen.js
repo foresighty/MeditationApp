@@ -41,15 +41,16 @@ const MainTimeDisplayText = styled.Text`
 `
 
 /* Percentage calculation
- * seconds to minutes = seconds / 60 (45 seconds / 60 = 0.75)
- * add this value to the remaining minutes (15 + 0.75 = 15.75)
- * divide by totalMinutes (15.75 / 30 = 0.525)
- * multiply by 100 (52.5)
+ * totalReamainingSeconds / 60 / totalMinues * 100
+ * example: where totalRemainingSeconds = 212, totalMinutes = 5
+ * 212 / 60 = 3.533333
+ * 3.533333 / 5 = 0.706666667
+ * 0.706666 * 100 = 70.6 percent
  */
 
 class TimerRunScreen extends React.Component {
   state = {
-    meditationMinutes: this.props.navigation.state.params.meditationMinutes,
+    //meditationMinutes: this.props.navigation.state.params.meditationMinutes, // is this needed? is seconds enough?
     meditationSeconds:
       this.props.navigation.state.params.meditationMinutes * 60,
     intervalMinutes: this.props.navigation.state.params.intervalMinutes,
@@ -59,9 +60,9 @@ class TimerRunScreen extends React.Component {
     isIntervalSet: this.props.navigation.state.params.intervalMinutes > 0,
     isIntervalFinished: false,
     isPrepRunning: true,
-    percentage: 100,
-    animPercentage: new Animated.Value(100),
-    // could reset with this.state.percentage.setValue(100)
+    isPaused: false, // flag to determine if 'play' or 'pause' button is shown
+    meditationPercentage: 100,
+    meditationAnimPercentage: new Animated.Value(100),
     intervalPercentage: 100,
     intervalAnimPercentage: new Animated.Value(100)
   }
@@ -81,22 +82,13 @@ class TimerRunScreen extends React.Component {
   // Main Timer Function
   // Uses react-native-background-timer in order to keep the clock running when the app in not in the foreground
   runTimer = () => {
+    if (this.state.isPaused) {
+      this.setState({
+        isPaused: false
+      })
+    }
     BackgroundTimer.start()
     timer = BackgroundTimer.setInterval(() => {
-      // if (this.state.prepSeconds === 0) {
-      //   gong.play(success => {
-      //     if (success) {
-      //       console.log('Gong finished playing')
-      //       //gong.pause()
-      //     } else {
-      //       console.log('Playback failed')
-      //     }
-      //   })
-      //   BackgroundTimer.clearInterval(timer)
-      //   BackgroundTimer.stop()
-      //   return
-      // }
-
       // Code for when prep time is running
       if (this.state.prepSeconds > 0) {
         this.setState({
@@ -109,7 +101,10 @@ class TimerRunScreen extends React.Component {
         const updatedPercentage =
           ((this.state.meditationSeconds - 1) / 60 / this.state.totalMinutes) *
           100
-        this.animate(updatedPercentage)
+        this.animatePercentage(
+          this.state.meditationAnimPercentage,
+          updatedPercentage
+        )
         // make a call to animate the interval timer (if set) when the prep timer finishes
         if (this.state.isIntervalSet) {
           const updatedIntervalPercentage =
@@ -117,7 +112,10 @@ class TimerRunScreen extends React.Component {
               60 /
               this.state.intervalMinutes) *
             100
-          this.animateInterval(updatedIntervalPercentage)
+          this.animatePercentage(
+            this.state.intervalAnimPercentage,
+            updatedIntervalPercentage
+          )
         }
         // stop the prep timer
         this.setState({
@@ -135,7 +133,7 @@ class TimerRunScreen extends React.Component {
           // Reset the interval timer
           if (
             this.state.intervalSeconds - 1 === 0 &&
-            this.state.percentage > 0
+            this.state.meditationPercentage > 0
           ) {
             this.resetIntervalTimer()
           } else {
@@ -156,7 +154,10 @@ class TimerRunScreen extends React.Component {
                   this.state.intervalMinutes) *
                 100
 
-              this.animateInterval(updatedIntervalPercentage)
+              this.animatePercentage(
+                this.state.intervalAnimPercentage,
+                updatedIntervalPercentage
+              )
               this.setState({
                 intervalPercentage: updatedIntervalPercentage,
                 intervalSeconds: this.state.intervalSeconds - 1
@@ -167,7 +168,7 @@ class TimerRunScreen extends React.Component {
         //
         // Meditation Timer
         let updatedPercentage = 0
-        if (this.state.percentage !== 0) {
+        if (this.state.meditationPercentage !== 0) {
           // subtracting 2 from the seconds 'anticipates' the next second. This way the animation fiishes at 0
           // by the meditationSeconds reaches 0
           updatedPercentage =
@@ -176,17 +177,23 @@ class TimerRunScreen extends React.Component {
               this.state.totalMinutes) *
             100
 
-          this.animate(updatedPercentage)
+          this.animatePercentage(
+            this.state.meditationAnimPercentage,
+            updatedPercentage
+          )
           this.setState({
             meditationSeconds: this.state.meditationSeconds - 1,
-            percentage: updatedPercentage
+            meditationPercentage: updatedPercentage
           })
         } else {
           //'All done! run some finish code - play audio and stop backgroundtimer'
-          this.animate(updatedPercentage)
+          this.animatePercentage(
+            this.state.meditationAnimPercentage,
+            updatedPercentage
+          )
           this.setState({
             meditationSeconds: 0,
-            percentage: 0
+            meditationPercentage: 0
           })
           gong.play()
           this.stopTimer()
@@ -200,18 +207,10 @@ class TimerRunScreen extends React.Component {
     BackgroundTimer.stop()
   }
 
-  animate = newPercentage => {
-    Animated.timing(this.state.animPercentage, {
+  animatePercentage = (targetTimer, newPercentage) => {
+    Animated.timing(targetTimer, {
       toValue: newPercentage,
       duration: 1100, // 1100 is smoother?
-      easing: Easing.linear
-    }).start()
-  }
-
-  animateInterval = newPercentage => {
-    Animated.timing(this.state.intervalAnimPercentage, {
-      toValue: newPercentage,
-      duration: 1100,
       easing: Easing.linear
     }).start()
   }
@@ -236,11 +235,20 @@ class TimerRunScreen extends React.Component {
 
     const nextPercentage =
       ((intervalSeconds - 1) / 60 / this.state.intervalMinutes) * 100
-    this.animateInterval(nextPercentage)
+    this.animatePercentage(this.state.intervalAnimPercentage, nextPercentage)
     this.setState({
       intervalPercentage: newPercentage,
       intervalSeconds
     })
+  }
+
+  pauseTimer = () => {
+    this.stopTimer()
+    this.setState({
+      isPaused: true
+    })
+    // interval and meditation percentage is one tick too far. (low)
+    // however, the animation is smooth when the clock resumes... so I like it?
   }
 
   formatTime = () => {
@@ -257,7 +265,6 @@ class TimerRunScreen extends React.Component {
   }
 
   render() {
-    const { intervalMinutes } = this.state
     const windowWidth = Dimensions.get('screen').width
     const meditationProgressSize = windowWidth * 0.75 // The diameter of the circular meditation progress bar
     const meditationProgressWidth = meditationProgressSize / 2 - 15 // The width of the circular meditation bar -- last digit is the pixel width
@@ -275,7 +282,7 @@ class TimerRunScreen extends React.Component {
       >
         {/* Meditation Timer Circle Progress Bar */}
         <AnimatedCircleProgress
-          percentage={this.state.animPercentage}
+          percentage={this.state.meditationAnimPercentage}
           size={meditationProgressSize}
           progressWidth={meditationProgressWidth}
           blankColor={cssGlobalStyles.sliderBGTint}
@@ -301,10 +308,12 @@ class TimerRunScreen extends React.Component {
           </AnimatedCircleProgress>
         </AnimatedCircleProgress>
         <View style={{ margin: 25 }} />
-        <MainButton
-          disabled={false}
-          onPress={() => this.props.navigation.navigate('TimerSet')}
-        >
+        {this.state.isPaused ? (
+          <MainButton onPress={() => this.runTimer()}>RUN TIMER</MainButton>
+        ) : (
+          <MainButton onPress={() => this.pauseTimer()}>PAUSE</MainButton>
+        )}
+        <MainButton onPress={() => this.props.navigation.navigate('TimerSet')}>
           TIMER OPTIONS
         </MainButton>
       </View>
