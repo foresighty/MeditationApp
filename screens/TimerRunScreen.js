@@ -117,7 +117,6 @@ class TimerRunScreen extends React.Component {
               60 /
               this.state.intervalMinutes) *
             100
-          // console.log(this.state.intervalMinutes)
           this.animateInterval(updatedIntervalPercentage)
         }
         // stop the prep timer
@@ -138,7 +137,6 @@ class TimerRunScreen extends React.Component {
             this.state.intervalSeconds - 1 === 0 &&
             this.state.percentage > 0
           ) {
-            console.log(`Calling reset timer: ${this.state.intervalSeconds}`)
             this.resetIntervalTimer()
           } else {
             // Otherwise, interval runs normally
@@ -193,7 +191,6 @@ class TimerRunScreen extends React.Component {
           gong.play()
           this.stopTimer()
         }
-        console.log(`Interval seconds: ${this.state.intervalSeconds}`)
       }
     }, 1000)
   }
@@ -220,9 +217,8 @@ class TimerRunScreen extends React.Component {
   }
 
   resetIntervalTimer = () => {
-    console.log('Reseting interval', this.state.intervalSeconds)
     gong.play()
-    const intervalSeconds = this.state.intervalMinutes * 60 - 1
+    const intervalSeconds = this.state.intervalMinutes * 60
     // Does the interval need to keep running?
     // If the reset interval seconds is more than the remaining time on the meditation timer. Stop the interval timer from running any more.
     if (intervalSeconds >= this.state.meditationSeconds) {
@@ -241,13 +237,10 @@ class TimerRunScreen extends React.Component {
     const nextPercentage =
       ((intervalSeconds - 1) / 60 / this.state.intervalMinutes) * 100
     this.animateInterval(nextPercentage)
-    this.setState(
-      {
-        intervalPercentage: newPercentage,
-        intervalSeconds
-      },
-      console.log('Interval Reset', this.state.intervalSeconds)
-    )
+    this.setState({
+      intervalPercentage: newPercentage,
+      intervalSeconds
+    })
   }
 
   formatTime = () => {
