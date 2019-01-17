@@ -10,6 +10,7 @@ import TimerScreen from './screens/TimerScreen'
 import TimerRunScreen from './screens/TimerRunScreen'
 import AboutScreen from './screens/AboutScreen'
 import cssGlobalStyles from './utils/cssGlobalStyles'
+import cssToReactNative from 'css-to-react-native'
 
 // Define the navigation stacks
 const TimerNavigator = createStackNavigator(
@@ -68,7 +69,8 @@ const RootNavigator = createBottomTabNavigator(
       activeTintColor: cssGlobalStyles.activeTint,
       inactiveTintColor: cssGlobalStyles.controlHighlight,
       style: {
-        height: 50
+        height: 50,
+        backgroundColor: cssGlobalStyles.primaryBackgroundColor
       }
     }
   }

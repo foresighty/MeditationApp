@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Dimensions, Platform, Animated, Easing } from 'react-native'
+import { View, Dimensions, Platform, Animated, Easing } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import Sound from 'react-native-sound'
 import styled from 'styled-components/native'
@@ -20,6 +20,23 @@ const gong = new Sound('gamelangong.mp3', Sound.MAIN_BUNDLE, error => {
   }
   // loaded successfully
   console.log(`duration in seconds: ${gong.getDuration()}`)
+})
+
+const chime = new Sound('chime.mp3', Sound.MAIN_BUNDLE, error => {
+  if (error) {
+    console.log('failed to load the sound "chime"', error)
+    return
+  }
+  // loaded successfully
+  console.log(`duration in seconds: ${chime.getDuration()}`)
+})
+const finishGong = new Sound('big_gong.mp3', Sound.MAIN_BUNDLE, error => {
+  if (error) {
+    console.log('failed to load the sound "BigGong"', error)
+    return
+  }
+  // loaded successfully
+  console.log(`duration in seconds: ${finishGong.getDuration()}`)
 })
 
 // Animated CircleProgress
@@ -157,7 +174,7 @@ class TimerRunScreen extends React.Component {
             meditationSeconds: 0,
             meditationPercentage: 0
           })
-          gong.play()
+          finishGong.play()
           this.stopTimer()
         }
       }
@@ -178,7 +195,7 @@ class TimerRunScreen extends React.Component {
   }
 
   resetIntervalTimer = () => {
-    gong.play()
+    chime.play()
     const intervalSeconds = this.state.intervalMinutes * 60
     // Does the interval need to keep running?
     // If the reset interval seconds is more than the remaining time on the meditation timer. Stop the interval timer from running any more.
@@ -260,6 +277,31 @@ class TimerRunScreen extends React.Component {
       )
     }
 
+    // Conditionally switch control button between 'PLAY' or 'PAUSE'
+    let timerControl = (
+      <ControlButton
+        bgColor={cssGlobalStyles.primaryBackgroundColor}
+        fgColor={cssGlobalStyles.controlHighlight}
+        onPress={() => this.pauseTimer()}
+        fontSize={12}
+      >
+        PAUSE
+      </ControlButton>
+    )
+
+    if (this.state.isPaused) {
+      timerControl = (
+        <ControlButton
+          bgColor={cssGlobalStyles.primaryBackgroundColor}
+          fgColor={cssGlobalStyles.controlHighlight}
+          onPress={() => this.runTimer()}
+          fontSize={12}
+        >
+          RESUME
+        </ControlButton>
+      )
+    }
+
     return (
       <View
         style={{
@@ -287,27 +329,7 @@ class TimerRunScreen extends React.Component {
             {intervalTimerElement}
           </AnimatedCircleProgress>
           {/* Conditionally show either the pause or play button */}
-          <View style={{ marginTop: 36 }}>
-            {this.state.isPaused ? (
-              <ControlButton
-                bgColor={cssGlobalStyles.primaryBackgroundColor}
-                fgColor={cssGlobalStyles.controlHighlight}
-                onPress={() => this.runTimer()}
-                fontSize={12}
-              >
-                RESUME
-              </ControlButton>
-            ) : (
-              <ControlButton
-                bgColor={cssGlobalStyles.primaryBackgroundColor}
-                fgColor={cssGlobalStyles.controlHighlight}
-                onPress={() => this.pauseTimer()}
-                fontSize={12}
-              >
-                PAUSE
-              </ControlButton>
-            )}
-          </View>
+          <View style={{ marginTop: 36 }}>{timerControl}</View>
         </View>
         <View
           style={{
