@@ -27,6 +27,14 @@ const TimerNavigator = createStackNavigator(
   }
 )
 
+TimerNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true
+  if (navigation.state.index > 0) {
+    tabBarVisible = false
+  }
+  return { tabBarVisible }
+}
+
 const RootNavigator = createBottomTabNavigator(
   {
     Timer: {
@@ -58,7 +66,7 @@ const RootNavigator = createBottomTabNavigator(
       activeBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
       inactiveBackgroundColor: cssGlobalStyles.primaryBackgroundColor,
       activeTintColor: cssGlobalStyles.activeTint,
-      inactiveTintColor: cssGlobalStyles.inactiveTint,
+      inactiveTintColor: cssGlobalStyles.controlHighlight,
       style: {
         height: 50
       }

@@ -6,5 +6,6 @@
     "titleBar.inactiveBackground": "#427af4CC"
   },
   "prettier.semi": false,
-  "prettier.singleQuote": true
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 100
 }

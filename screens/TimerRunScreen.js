@@ -1,18 +1,11 @@
 import React from 'react'
-import {
-  View,
-  Text,
-  Dimensions,
-  Platform,
-  Animated,
-  Easing
-} from 'react-native'
+import { View, Text, Dimensions, Platform, Animated, Easing } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import Sound from 'react-native-sound'
 import styled from 'styled-components/native'
 
 import CircularProgress from '../components/CircleProgress'
-import MainButton from '../components/UI/MainButton'
+import ControlButton from '../components/UI/ControlButton'
 import cssGlobalStyles from '../utils/cssGlobalStyles'
 import prettyTime from '../utils/prettyTime'
 
@@ -30,9 +23,7 @@ const gong = new Sound('gamelangong.mp3', Sound.MAIN_BUNDLE, error => {
 })
 
 // Animated CircleProgress
-const AnimatedCircleProgress = Animated.createAnimatedComponent(
-  CircularProgress
-)
+const AnimatedCircleProgress = Animated.createAnimatedComponent(CircularProgress)
 
 const MainTimeDisplayText = styled.Text`
   color: white;
@@ -51,14 +42,13 @@ const MainTimeDisplayText = styled.Text`
 class TimerRunScreen extends React.Component {
   state = {
     //meditationMinutes: this.props.navigation.state.params.meditationMinutes, // is this needed? is seconds enough?
-    meditationSeconds:
-      this.props.navigation.state.params.meditationMinutes * 60,
+    meditationSeconds: this.props.navigation.state.params.meditationMinutes * 60,
     intervalMinutes: this.props.navigation.state.params.intervalMinutes,
     intervalSeconds: this.props.navigation.state.params.intervalMinutes * 60,
     prepSeconds: this.props.navigation.state.params.prepSeconds,
     totalMinutes: this.props.navigation.state.params.meditationMinutes,
-    isIntervalSet: this.props.navigation.state.params.intervalMinutes > 0,
-    isIntervalFinished: false,
+    isIntervalSet: this.props.navigation.state.params.intervalMinutes > 0, // flag to check if the interval was set
+    isIntervalFinished: false, // flag to determine whether or not the interval timer code can stop running
     isPrepRunning: true,
     isPaused: false, // flag to determine if 'play' or 'pause' button is shown
     meditationPercentage: 100,
@@ -99,23 +89,13 @@ class TimerRunScreen extends React.Component {
         gong.play()
         // make a call to animate the meditation timer when the prep timer finishes
         const updatedPercentage =
-          ((this.state.meditationSeconds - 1) / 60 / this.state.totalMinutes) *
-          100
-        this.animatePercentage(
-          this.state.meditationAnimPercentage,
-          updatedPercentage
-        )
+          ((this.state.meditationSeconds - 1) / 60 / this.state.totalMinutes) * 100
+        this.animatePercentage(this.state.meditationAnimPercentage, updatedPercentage)
         // make a call to animate the interval timer (if set) when the prep timer finishes
         if (this.state.isIntervalSet) {
           const updatedIntervalPercentage =
-            ((this.state.intervalSeconds - 1) /
-              60 /
-              this.state.intervalMinutes) *
-            100
-          this.animatePercentage(
-            this.state.intervalAnimPercentage,
-            updatedIntervalPercentage
-          )
+            ((this.state.intervalSeconds - 1) / 60 / this.state.intervalMinutes) * 100
+          this.animatePercentage(this.state.intervalAnimPercentage, updatedIntervalPercentage)
         }
         // stop the prep timer
         this.setState({
@@ -131,10 +111,7 @@ class TimerRunScreen extends React.Component {
           //
           // if the interval timer reaches 0 BUT the meditation timer contunues
           // Reset the interval timer
-          if (
-            this.state.intervalSeconds - 1 === 0 &&
-            this.state.meditationPercentage > 0
-          ) {
+          if (this.state.intervalSeconds - 1 === 0 && this.state.meditationPercentage > 0) {
             this.resetIntervalTimer()
           } else {
             // Otherwise, interval runs normally
@@ -144,20 +121,14 @@ class TimerRunScreen extends React.Component {
               // by the time intervalSeconds reaches 0
               // however, only subtract 1 second if only 1 second remains on the meditation timer
               const secondsToSubtract =
-                this.state.intervalSeconds === 1 &&
-                this.state.meditationSeconds < 5
-                  ? 1
-                  : 2
+                this.state.intervalSeconds === 1 && this.state.meditationSeconds < 5 ? 1 : 2
               updatedIntervalPercentage =
                 ((this.state.intervalSeconds - secondsToSubtract) /
                   60 /
                   this.state.intervalMinutes) *
                 100
 
-              this.animatePercentage(
-                this.state.intervalAnimPercentage,
-                updatedIntervalPercentage
-              )
+              this.animatePercentage(this.state.intervalAnimPercentage, updatedIntervalPercentage)
               this.setState({
                 intervalPercentage: updatedIntervalPercentage,
                 intervalSeconds: this.state.intervalSeconds - 1
@@ -172,25 +143,16 @@ class TimerRunScreen extends React.Component {
           // subtracting 2 from the seconds 'anticipates' the next second. This way the animation fiishes at 0
           // by the meditationSeconds reaches 0
           updatedPercentage =
-            ((this.state.meditationSeconds - 2) /
-              60 /
-              this.state.totalMinutes) *
-            100
+            ((this.state.meditationSeconds - 2) / 60 / this.state.totalMinutes) * 100
 
-          this.animatePercentage(
-            this.state.meditationAnimPercentage,
-            updatedPercentage
-          )
+          this.animatePercentage(this.state.meditationAnimPercentage, updatedPercentage)
           this.setState({
             meditationSeconds: this.state.meditationSeconds - 1,
             meditationPercentage: updatedPercentage
           })
         } else {
           //'All done! run some finish code - play audio and stop backgroundtimer'
-          this.animatePercentage(
-            this.state.meditationAnimPercentage,
-            updatedPercentage
-          )
+          this.animatePercentage(this.state.meditationAnimPercentage, updatedPercentage)
           this.setState({
             meditationSeconds: 0,
             meditationPercentage: 0
@@ -229,12 +191,10 @@ class TimerRunScreen extends React.Component {
     }
     //
     // Reset the interval timer
-    const newPercentage =
-      (intervalSeconds / 60 / this.state.intervalMinutes) * 100
+    const newPercentage = (intervalSeconds / 60 / this.state.intervalMinutes) * 100
     this.state.intervalAnimPercentage.setValue(newPercentage)
 
-    const nextPercentage =
-      ((intervalSeconds - 1) / 60 / this.state.intervalMinutes) * 100
+    const nextPercentage = ((intervalSeconds - 1) / 60 / this.state.intervalMinutes) * 100
     this.animatePercentage(this.state.intervalAnimPercentage, nextPercentage)
     this.setState({
       intervalPercentage: newPercentage,
@@ -256,11 +216,7 @@ class TimerRunScreen extends React.Component {
     const minutes = Math.floor(totalSeconds / 60)
     const remainingSeconds = totalSeconds - minutes * 60
 
-    const formattedTime = `${prettyTime(minutes, '0', 2)}:${prettyTime(
-      remainingSeconds,
-      '0',
-      2
-    )}`
+    const formattedTime = `${prettyTime(minutes, '0', 2)}:${prettyTime(remainingSeconds, '0', 2)}`
     return formattedTime
   }
 
@@ -271,51 +227,104 @@ class TimerRunScreen extends React.Component {
     const intervalProgressSize = meditationProgressSize - 50 // interval timer
     const intervalProgressWidth = intervalProgressSize / 2 - 5 // interval timer
 
+    // Conditionally display the interval timer if one was set.
+    let intervalTimerElement = null
+    if (this.state.isIntervalSet) {
+      intervalTimerElement = (
+        <AnimatedCircleProgress
+          percentage={this.state.intervalAnimPercentage}
+          size={intervalProgressSize}
+          progressWidth={intervalProgressWidth}
+          blankColor={cssGlobalStyles.sliderBGTint}
+          donutColor={cssGlobalStyles.sliderIntervalTint}
+          fillColor={cssGlobalStyles.primaryBackgroundColor}
+        >
+          <View>
+            <MainTimeDisplayText>
+              {this.state.isPrepRunning
+                ? `${prettyTime(this.state.prepSeconds, '0', 2)}s`
+                : this.formatTime()}
+            </MainTimeDisplayText>
+          </View>
+        </AnimatedCircleProgress>
+      )
+    } else {
+      intervalTimerElement = (
+        <View>
+          <MainTimeDisplayText>
+            {this.state.isPrepRunning
+              ? `${prettyTime(this.state.prepSeconds, '0', 2)}s`
+              : this.formatTime()}
+          </MainTimeDisplayText>
+        </View>
+      )
+    }
+
     return (
       <View
         style={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
           backgroundColor: cssGlobalStyles.primaryBackgroundColor
         }}
       >
-        {/* Meditation Timer Circle Progress Bar */}
-        <AnimatedCircleProgress
-          percentage={this.state.meditationAnimPercentage}
-          size={meditationProgressSize}
-          progressWidth={meditationProgressWidth}
-          blankColor={cssGlobalStyles.sliderBGTint}
-          donutColor={cssGlobalStyles.sliderMeditationTint}
-          fillColor={cssGlobalStyles.primaryBackgroundColor}
+        <View
+          style={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
         >
-          {/* Nested Interval Timer Progress Bar */}
+          {/* Meditation Timer Circle Progress Bar */}
           <AnimatedCircleProgress
-            percentage={this.state.intervalAnimPercentage}
-            size={intervalProgressSize}
-            progressWidth={intervalProgressWidth}
+            percentage={this.state.meditationAnimPercentage}
+            size={meditationProgressSize}
+            progressWidth={meditationProgressWidth}
             blankColor={cssGlobalStyles.sliderBGTint}
-            donutColor={cssGlobalStyles.sliderIntervalTint}
+            donutColor={cssGlobalStyles.sliderMeditationTint}
             fillColor={cssGlobalStyles.primaryBackgroundColor}
           >
-            <View>
-              <MainTimeDisplayText>
-                {this.state.isPrepRunning
-                  ? `${prettyTime(this.state.prepSeconds, '0', 2)}s`
-                  : this.formatTime()}
-              </MainTimeDisplayText>
-            </View>
+            {/* Nested Interval Timer Progress Bar */}
+            {intervalTimerElement}
           </AnimatedCircleProgress>
-        </AnimatedCircleProgress>
-        <View style={{ margin: 25 }} />
-        {this.state.isPaused ? (
-          <MainButton onPress={() => this.runTimer()}>RUN TIMER</MainButton>
-        ) : (
-          <MainButton onPress={() => this.pauseTimer()}>PAUSE</MainButton>
-        )}
-        <MainButton onPress={() => this.props.navigation.navigate('TimerSet')}>
-          TIMER OPTIONS
-        </MainButton>
+          {/* Conditionally show either the pause or play button */}
+          <View style={{ marginTop: 36 }}>
+            {this.state.isPaused ? (
+              <ControlButton
+                bgColor={cssGlobalStyles.primaryBackgroundColor}
+                fgColor={cssGlobalStyles.controlHighlight}
+                onPress={() => this.runTimer()}
+                fontSize={12}
+              >
+                RESUME
+              </ControlButton>
+            ) : (
+              <ControlButton
+                bgColor={cssGlobalStyles.primaryBackgroundColor}
+                fgColor={cssGlobalStyles.controlHighlight}
+                onPress={() => this.pauseTimer()}
+                fontSize={12}
+              >
+                PAUSE
+              </ControlButton>
+            )}
+          </View>
+        </View>
+        <View
+          style={{
+            marginBottom: 36,
+            marginLeft: 24,
+            marginRight: 24
+          }}
+        >
+          <ControlButton
+            bgColor={cssGlobalStyles.primaryBackgroundColor}
+            fgColor={cssGlobalStyles.controlHighlight}
+            onPress={() => this.props.navigation.navigate('TimerSet')}
+            fontSize={12}
+          >
+            BACK
+          </ControlButton>
+        </View>
       </View>
     )
   }

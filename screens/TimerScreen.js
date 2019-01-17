@@ -1,14 +1,8 @@
 import React, { Component } from 'react'
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Animated,
-  TouchableOpacity
-} from 'react-native'
+import { View, Text, SafeAreaView, Animated } from 'react-native'
 
 import CircularSliderSet from '../components/CircularSliderSet'
-import MainButton from '../components/UI/MainButton'
+import ControlButton from '../components/UI/ControlButton'
 import cssGlobalStyles from '../utils/cssGlobalStyles'
 
 class TimerScreen extends Component {
@@ -126,9 +120,7 @@ class TimerScreen extends Component {
             >
               Interval Time: {this.state.intervalMinutes} mins
             </Text>
-            <Text
-              style={{ color: cssGlobalStyles.sliderPrepTint, fontSize: 18 }}
-            >
+            <Text style={{ color: cssGlobalStyles.sliderPrepTint, fontSize: 18 }}>
               Preparation Time: {this.state.prepTimeSeconds} s
             </Text>
           </View>
@@ -175,7 +167,7 @@ class TimerScreen extends Component {
                 position: 'absolute'
               }}
             >
-              <MainButton
+              <ControlButton
                 disabled={this.state.warning}
                 onPress={() =>
                   this.props.navigation.navigate('TimerRun', {
@@ -184,9 +176,11 @@ class TimerScreen extends Component {
                     prepSeconds: this.state.prepTimeSeconds
                   })
                 }
+                bgColor={cssGlobalStyles.primaryBackgroundColor}
+                fgColor={cssGlobalStyles.controlHighlight}
               >
                 START
-              </MainButton>
+              </ControlButton>
             </Animated.View>
           </View>
         </View>

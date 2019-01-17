@@ -8,6 +8,7 @@ const cssGlobalStyles = {
   sliderMeditationTint: '#E06862',
   sliderIntervalTint: '#78edc0',
   sliderPrepTint: '#aecce8',
+  controlHighlight: '#d7dde5',
   warning: '#ffe500'
 }
 
