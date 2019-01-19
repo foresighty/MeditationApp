@@ -5,6 +5,7 @@ import {
   createAppContainer
 } from 'react-navigation'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import SplashScreen from 'react-native-splash-screen'
 
 import TimerScreen from './screens/TimerScreen'
 import TimerRunScreen from './screens/TimerRunScreen'
@@ -81,6 +82,10 @@ const AppContainer = createAppContainer(RootNavigator)
 
 // Render the <AppContainer />
 class App extends React.Component {
+  componentDidMount() {
+    SplashScreen.hide()
+  }
+
   render() {
     return <AppContainer />
   }
